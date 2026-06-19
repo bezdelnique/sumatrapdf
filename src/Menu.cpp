@@ -970,6 +970,10 @@ static MenuDef menuDefContext[] = {
 //        (UINT_PTR)menuDefCreateAnnotFromSelection,
 //    },
     {
+        _TRN("Annotation &Mode"),
+        CmdToggleAnnotationMode,
+    },
+    {
         _TRN("Create Annotation &Under Cursor"),
         (UINT_PTR)menuDefCreateAnnotUnderCursor,
     },
@@ -2069,6 +2073,7 @@ void OnWindowContextMenu(MainWindow* win, int x, int y) {
         MenuRemove(popup, CmdToggleFullscreen);
     }
     SetMenuStateForSelection(tab, popup);
+    MenuSetChecked(popup, CmdToggleAnnotationMode, gAnnotationMode);
 
     MenuUpdatePrintItem(win, popup, true);
     MenuSetEnabled(popup, CmdToggleBookmarks, win->ctrl->HasToc());

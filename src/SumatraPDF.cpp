@@ -158,6 +158,7 @@ bool gSupressNextAltMenuTrigger = false;
 
 bool gCrashOnOpen = false;
 bool gRedrawLog = false;
+bool gAnnotationMode = false;
 
 static void RelayoutFrame(MainWindow* win, bool updateToolbars = true, int sidebarDx = -1);
 static void UpdateOverlayScrollbarPositions(MainWindow* win);
@@ -7713,6 +7714,10 @@ static LRESULT FrameOnCommand(MainWindow* win, HWND hwnd, UINT msg, WPARAM wp, L
             // reference hover preview; re-enable with the default delay
             gGlobalPrefs->citationHoverDelay = (gGlobalPrefs->citationHoverDelay >= 0) ? -1 : 300;
             SaveSettings();
+            break;
+
+        case CmdToggleAnnotationMode:
+            gAnnotationMode = !gAnnotationMode;
             break;
 
         case CmdToggleChmUI: {

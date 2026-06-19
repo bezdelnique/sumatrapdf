@@ -238,6 +238,7 @@ export const commands = [
     "CmdConvertImageToPdf", "Convert Image To PDF",
     "CmdExpandToCurrentPage", "Expand TOC to Current Page",
     "CmdStartAutoScroll", "Start Auto-Scroll",
+    "CmdToggleAnnotationMode", "Toggle Annotation Mode",
     "CmdNone", "Do nothing",
 ];
 

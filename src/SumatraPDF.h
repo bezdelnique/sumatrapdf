@@ -105,6 +105,7 @@ extern HBITMAP gBitmapReloadingCue;
 extern HCURSOR gCursorDrag;
 extern bool gCrashOnOpen;
 extern HWND gLastActiveFrameHwnd;
+extern bool gAnnotationMode;
 
 struct DocController;
 extern DocController* gMostRecentlyOpenedDoc;
