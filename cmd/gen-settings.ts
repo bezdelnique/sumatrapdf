@@ -523,6 +523,7 @@ const fileSettings: Field[] = [
     "if true, we show table of contents (Bookmarks) sidebar if it's present " + "in the document",
   ),
   mkField("SidebarDx", Int, 0, "width of the left sidebar panel containing the table of contents"),
+  mkField("AnnotationMode", Bool, false, "if true, annotation mode is active for this document"),
   mkField(
     "DisplayR2L",
     Bool,

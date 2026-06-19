@@ -158,7 +158,6 @@ bool gSupressNextAltMenuTrigger = false;
 
 bool gCrashOnOpen = false;
 bool gRedrawLog = false;
-bool gAnnotationMode = false;
 
 static void RelayoutFrame(MainWindow* win, bool updateToolbars = true, int sidebarDx = -1);
 static void UpdateOverlayScrollbarPositions(MainWindow* win);
@@ -645,6 +644,7 @@ static void UpdateSidebarDisplayState(WindowTab* tab, FileState* fs) {
     ReportIf(!tab);
     MainWindow* win = tab->win;
     fs->showToc = tab->showToc;
+    fs->annotationMode = tab->annotationMode;
     if (win->tocLoaded && tab == win->CurrentTab()) {
         TocTree* tocTree = tab->ctrl->GetToc();
         UpdateTocExpansionState(tab->tocState, win->tocTreeView, tocTree);
@@ -1473,6 +1473,7 @@ static void ReplaceDocumentInCurrentTab(LoadArgs* args, DocController* ctrl, Fil
             showType = SW_MINIMIZE;
         }
         showToc = fs->showToc;
+        tab->annotationMode = fs->annotationMode;
         if (win->ctrl && win->presentation) {
             showToc = tab->showTocPresentation;
         }
@@ -7728,7 +7729,9 @@ static LRESULT FrameOnCommand(MainWindow* win, HWND hwnd, UINT msg, WPARAM wp, L
             break;
 
         case CmdToggleAnnotationMode:
-            gAnnotationMode = !gAnnotationMode;
+            if (tab) {
+                tab->annotationMode = !tab->annotationMode;
+            }
             break;
 
         case CmdToggleChmUI: {

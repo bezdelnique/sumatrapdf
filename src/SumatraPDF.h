@@ -105,7 +105,6 @@ extern HBITMAP gBitmapReloadingCue;
 extern HCURSOR gCursorDrag;
 extern bool gCrashOnOpen;
 extern HWND gLastActiveFrameHwnd;
-extern bool gAnnotationMode;
 
 void MakeHighlightAnnotationWithColor(WindowTab* tab, COLORREF color);
 

@@ -6,7 +6,8 @@
       "PowerShell(bun cmd/gen-commands.ts 2>&1)",
       "PowerShell(head -60)",
       "PowerShell(git remote add bezdelnique https://github.com/bezdelnique/sumatrapdf.git)",
-      "PowerShell(git push -u bezdelnique annotation_mode 2>&1)"
+      "PowerShell(git push -u bezdelnique annotation_mode 2>&1)",
+      "PowerShell(bun cmd/gen-settings.ts 2>&1)"
     ]
   }
 }

@@ -183,7 +183,6 @@ UIFontSize = 0
 DisableAntiAlias = false
 
 ; if true, disables auto-linking of URLs and email addresses found in PDF text
-; (see https://www.sumatrapdfreader.org/docs/Hyperlinks)
 DisableAutoLinks = false
 
 ; if true, we use Windows system colors for background/text color. Over-rides
@@ -568,6 +567,9 @@ FileStates [
 
     ; width of the left sidebar panel containing the table of contents
     SidebarDx = 0
+
+    ; if true, annotation mode is active for this document
+    AnnotationMode = false
 
     ; if true, the document is displayed right-to-left in facing and book view
     ; modes (only used for comic book documents)

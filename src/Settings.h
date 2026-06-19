@@ -344,6 +344,8 @@ struct FileState {
     bool showToc;
     // width of the left sidebar panel containing the table of contents
     int sidebarDx;
+    // if true, annotation mode is active for this document
+    bool annotationMode;
     // if true, the document is displayed right-to-left in facing and book
     // view modes (only used for comic book documents)
     bool displayR2L;
@@ -822,16 +824,17 @@ static const FieldInfo gFileStateFields[] = {
     {offsetof(FileState, windowPos), SettingType::Compact, (intptr_t)&gRect_1_Info},
     {offsetof(FileState, showToc), SettingType::Bool, true},
     {offsetof(FileState, sidebarDx), SettingType::Int, 0},
+    {offsetof(FileState, annotationMode), SettingType::Bool, false},
     {offsetof(FileState, displayR2L), SettingType::Bool, false},
     {offsetof(FileState, bgCol), SettingType::Color, (intptr_t)""},
     {offsetof(FileState, tabCol), SettingType::Color, (intptr_t)""},
     {offsetof(FileState, reparseIdx), SettingType::Int, 0},
     {offsetof(FileState, tocState), SettingType::IntArray, 0},
 };
-static StructInfo gFileStateInfo = {
-    sizeof(FileState), 21, gFileStateFields,
-    "FilePath\0Favorites\0IsPinned\0IsMissing\0OpenCount\0DecryptionKey\0UseDefaultState\0DisplayMode\0ScrollPos\0PageN"
-    "o\0Zoom\0Rotation\0WindowState\0WindowPos\0ShowToc\0SidebarDx\0DisplayR2L\0BgCol\0TabCol\0ReparseIdx\0TocState"};
+static StructInfo gFileStateInfo = {sizeof(FileState), 22, gFileStateFields,
+                                    "FilePath\0Favorites\0IsPinned\0IsMissing\0OpenCount\0DecryptionKey\0UseDefaultStat"
+                                    "e\0DisplayMode\0ScrollPos\0PageNo\0Zoom\0Rotation\0WindowState\0WindowPos\0ShowToc"
+                                    "\0SidebarDx\0AnnotationMode\0DisplayR2L\0BgCol\0TabCol\0ReparseIdx\0TocState"};
 
 static const FieldInfo gPointF_1_Fields[] = {
     {offsetof(PointF, x), SettingType::Float, (intptr_t)"0"},

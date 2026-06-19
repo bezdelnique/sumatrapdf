@@ -1457,7 +1457,7 @@ static void OnMouseLeftButtonUp(MainWindow* win, int x, int y, WPARAM key) {
         if (MouseAction::Selecting == ma && win->showSelection) {
             win->selectionMeasure = dm->CvtFromScreen(win->selectionRect).Size();
         }
-        if (gAnnotationMode && win->showSelection && win->CurrentTab()->selectionOnPage) {
+        if (win->CurrentTab()->annotationMode && win->showSelection && win->CurrentTab()->selectionOnPage) {
             OnAnnotationModePopup(win, x, y);
         }
     }
