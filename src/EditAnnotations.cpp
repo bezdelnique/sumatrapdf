@@ -349,6 +349,49 @@ void NotifyAnnotationsChanged(EditAnnotationsWindow* ew) {
     EnableSaveIfAnnotationsChanged(ew);
 }
 
+static TempStr AnnotTextPreviewTemp(Annotation* annot) {
+    AnnotationType tp = annot->type;
+    if (tp == AnnotationType::Text || tp == AnnotationType::FreeText) {
+        TempStr contents = Contents(annot);
+        if (!str::IsEmpty(contents)) {
+            return contents;
+        }
+        return nullptr;
+    }
+    if (tp != AnnotationType::Highlight && tp != AnnotationType::Underline && tp != AnnotationType::Squiggly &&
+        tp != AnnotationType::StrikeOut) {
+        return nullptr;
+    }
+    Rect* coords = nullptr;
+    const WCHAR* pageText = annot->engine->GetTextForPage(annot->pageNo, nullptr, &coords);
+    if (!pageText || !coords) {
+        return nullptr;
+    }
+    RectF bounds = GetBounds(annot);
+    Rect boundsI = bounds.Round();
+    WStrBuilder result;
+    for (const WCHAR* src = pageText; *src; src++) {
+        if (result.size() >= 255) {
+            break;
+        }
+        if (*src == '\n') {
+            if (result.size() > 0 && result.Last() != L' ') {
+                result.AppendChar(L' ');
+            }
+            continue;
+        }
+        Rect r = coords[src - pageText];
+        Rect isect = boundsI.Intersect(r);
+        if (!isect.IsEmpty() && 1.0 * isect.dx * isect.dy / (r.dx * r.dy) >= 0.3) {
+            result.AppendChar(*src);
+        }
+    }
+    if (result.size() == 0) {
+        return nullptr;
+    }
+    return ToUtf8Temp(result.Get());
+}
+
 static void RebuildAnnotationsListBox(EditAnnotationsWindow* ew) {
     auto model = new ListBoxModelStrings();
     int n = 0;
@@ -359,8 +402,13 @@ static void RebuildAnnotationsListBox(EditAnnotationsWindow* ew) {
         auto annot = ew->annotations.at(i);
         s.Reset();
         s.AppendFmt(_TRA("page %d,"), annot->pageNo);
-        TempStr name = AnnotationReadableNameTemp(annot->type);
-        s.AppendFmt(" %s", name);
+        TempStr preview = AnnotTextPreviewTemp(annot);
+        if (preview) {
+            s.AppendFmt(" %s", preview);
+        } else {
+            TempStr name = AnnotationReadableNameTemp(annot->type);
+            s.AppendFmt(" %s", name);
+        }
         model->strings.Append(s.Get());
     }
 

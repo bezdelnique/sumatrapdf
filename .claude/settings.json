@@ -7,7 +7,13 @@
       "PowerShell(head -60)",
       "PowerShell(git remote add bezdelnique https://github.com/bezdelnique/sumatrapdf.git)",
       "PowerShell(git push -u bezdelnique annotation_mode 2>&1)",
-      "PowerShell(bun cmd/gen-settings.ts 2>&1)"
+      "PowerShell(bun cmd/gen-settings.ts 2>&1)",
+      "Bash(clang-format -i src/EditAnnotations.cpp)",
+      "PowerShell(clang-format -i src/EditAnnotations.cpp)",
+      "PowerShell(if \\($?\\) { \"done\" } else { \"failed\" })",
+      "PowerShell(bun ./cmd/format.ts 2>&1)",
+      "PowerShell(MSBuild.exe vs2022\\\\SumatraPDF.sln /t:SumatraPDF-dll /p:Configuration=Debug /p:Platform=x64 /m /verbosity:minimal 2>&1)",
+      "PowerShell(& \"C:\\\\Program Files\\\\Microsoft Visual Studio\\\\2022\\\\Community\\\\MSBuild\\\\Current\\\\Bin\\\\MSBuild.exe\" vs2022\\\\SumatraPDF.sln /t:SumatraPDF-dll /p:Configuration=Debug /p:Platform=x64 /m /verbosity:minimal 2>&1)"
     ]
   }
 }
