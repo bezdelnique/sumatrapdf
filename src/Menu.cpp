@@ -1972,6 +1972,62 @@ void ForgetFileFromFrequentlyRead(MainWindow* win, const char* filePath) {
     win->RedrawAll(true);
 }
 
+struct AnnotModeColor {
+    const wchar_t* label;
+    COLORREF color;
+};
+
+static const AnnotModeColor kAnnotModeColors[] = {
+    {L"Yellow", RGB(0xFF, 0xEB, 0x3B)}, {L"Red", RGB(0xEF, 0x53, 0x50)},    {L"Green", RGB(0x66, 0xBB, 0x6A)},
+    {L"Blue", RGB(0x42, 0xA5, 0xF5)},   {L"Purple", RGB(0xAB, 0x47, 0xBC)},
+};
+
+static HBITMAP MakeColorSquareBitmap(COLORREF color, int size) {
+    HDC hdcScr = GetDC(nullptr);
+    HDC hdc = CreateCompatibleDC(hdcScr);
+    HBITMAP bmp = CreateCompatibleBitmap(hdcScr, size, size);
+    HGDIOBJ oldBmp = SelectObject(hdc, bmp);
+    HBRUSH br = CreateSolidBrush(color);
+    RECT rc{0, 0, size, size};
+    FillRect(hdc, &rc, br);
+    DeleteObject(br);
+    HPEN pen = CreatePen(PS_SOLID, 1, RGB(80, 80, 80));
+    HGDIOBJ oldPen = SelectObject(hdc, pen);
+    HGDIOBJ oldBrush = SelectObject(hdc, GetStockObject(NULL_BRUSH));
+    Rectangle(hdc, 0, 0, size, size);
+    SelectObject(hdc, oldPen);
+    SelectObject(hdc, oldBrush);
+    DeleteObject(pen);
+    SelectObject(hdc, oldBmp);
+    DeleteDC(hdc);
+    ReleaseDC(nullptr, hdcScr);
+    return bmp;
+}
+
+void OnAnnotationModePopup(MainWindow* win, int x, int y) {
+    constexpr int kNColors = (int)dimof(kAnnotModeColors);
+    int sqSize = GetSystemMetrics(SM_CYMENUCHECK);
+    HMENU popup = CreatePopupMenu();
+    HBITMAP bitmaps[kNColors];
+    for (int i = 0; i < kNColors; i++) {
+        AppendMenuW(popup, MF_STRING, i + 1, kAnnotModeColors[i].label);
+        bitmaps[i] = MakeColorSquareBitmap(kAnnotModeColors[i].color, sqSize);
+        SetMenuItemBitmaps(popup, i + 1, MF_BYCOMMAND, bitmaps[i], bitmaps[i]);
+    }
+    POINT pt{x, y};
+    MapWindowPoints(win->hwndCanvas, HWND_DESKTOP, &pt, 1);
+    MarkMenuOwnerDraw(popup);
+    int cmd = TrackPopupMenu(popup, TPM_RETURNCMD | TPM_RIGHTBUTTON, pt.x, pt.y, 0, win->hwndFrame, nullptr);
+    FreeMenuOwnerDrawInfoData(popup);
+    DestroyMenu(popup);
+    for (int i = 0; i < kNColors; i++) {
+        DeleteObject(bitmaps[i]);
+    }
+    if (cmd >= 1 && cmd <= kNColors) {
+        MakeHighlightAnnotationWithColor(win->CurrentTab(), kAnnotModeColors[cmd - 1].color);
+    }
+}
+
 // s could be in format "file://path.pdf#page=1" or "mailto:foo@bar.com"
 // We only want the "path.pdf" / "foo@bar.com"
 static TempStr CleanupURLForClipbardCopyTemp(const char* s) {

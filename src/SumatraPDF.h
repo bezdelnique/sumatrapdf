@@ -107,6 +107,8 @@ extern bool gCrashOnOpen;
 extern HWND gLastActiveFrameHwnd;
 extern bool gAnnotationMode;
 
+void MakeHighlightAnnotationWithColor(WindowTab* tab, COLORREF color);
+
 struct DocController;
 extern DocController* gMostRecentlyOpenedDoc;
 

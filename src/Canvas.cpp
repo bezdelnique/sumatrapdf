@@ -1458,15 +1458,7 @@ static void OnMouseLeftButtonUp(MainWindow* win, int x, int y, WPARAM key) {
             win->selectionMeasure = dm->CvtFromScreen(win->selectionRect).Size();
         }
         if (gAnnotationMode && win->showSelection && win->CurrentTab()->selectionOnPage) {
-            HMENU popup = CreatePopupMenu();
-            AppendMenuW(popup, MF_STRING, CmdCreateAnnotHighlight, L"Highlight");
-            POINT pt2{x, y};
-            ClientToScreen(win->hwndCanvas, &pt2);
-            int cmd = TrackPopupMenu(popup, TPM_RETURNCMD | TPM_RIGHTBUTTON, pt2.x, pt2.y, 0, win->hwndCanvas, nullptr);
-            DestroyMenu(popup);
-            if (cmd == CmdCreateAnnotHighlight) {
-                SendMessageW(win->hwndFrame, WM_COMMAND, CmdCreateAnnotHighlight, 0);
-            }
+            OnAnnotationModePopup(win, x, y);
         }
     }
 

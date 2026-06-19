@@ -5624,6 +5624,17 @@ static Annotation* MakeAnnotationsFromSelection(WindowTab* tab, AnnotCreateArgs*
     return annot;
 }
 
+void MakeHighlightAnnotationWithColor(WindowTab* tab, COLORREF color) {
+    AnnotCreateArgs args{AnnotationType::Highlight};
+    u8 r, g, b;
+    UnpackColor(color, r, g, b);
+    args.col.wasParsed = true;
+    args.col.parsedOk = true;
+    args.col.col = color;
+    args.col.pdfCol = MkPdfColor(r, g, b, 170);
+    MakeAnnotationsFromSelection(tab, &args);
+}
+
 static void ToggleCursorPositionInDoc(MainWindow* win) {
     // "cursor position" tip: make figuring out the current
     // cursor position in cm/in/pt possible (for exact layouting)
