@@ -1373,8 +1373,7 @@ int GetMenuBarRebarHeight(MainWindow* win) {
     }
     int ideal = MenuBarToolbarIdealDy(win);
     if (IsRunningOnWine()) {
-        logf("GetMenuBarRebarHeight: rebar=%p RB_GETBARHEIGHT=%d fallbackIdeal=%d\n", win->hwndMenuReBar, dy,
-             ideal);
+        logf("GetMenuBarRebarHeight: rebar=%p RB_GETBARHEIGHT=%d fallbackIdeal=%d\n", win->hwndMenuReBar, dy, ideal);
     }
     return ideal;
 }

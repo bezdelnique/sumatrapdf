@@ -74,9 +74,10 @@ int GetTabbarHeight(HWND hwnd, float factor) {
     if (IsRunningOnWine()) {
         int dpi = DpiGet(hwnd);
         int desktopDpi = DpiGet(HWND_DESKTOP);
-        logf("GetTabbarHeight: hwnd=%p factor=%g dpi=%d desktopDpi=%d tabDyScaled=%d fontDy=%d "
-             "minDy=%d result=%d\n",
-             hwnd, factor, dpi, desktopDpi, DpiScale(hwnd, kTabBarDy), fontDyWithPadding, minDy, res);
+        logf(
+            "GetTabbarHeight: hwnd=%p factor=%g dpi=%d desktopDpi=%d tabDyScaled=%d fontDy=%d "
+            "minDy=%d result=%d\n",
+            hwnd, factor, dpi, desktopDpi, DpiScale(hwnd, kTabBarDy), fontDyWithPadding, minDy, res);
     }
     return res;
 }
