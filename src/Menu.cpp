@@ -2014,6 +2014,49 @@ void OnAnnotationModePopup(MainWindow* win, int x, int y) {
         bitmaps[i] = MakeColorSquareBitmap(kAnnotModeColors[i].color, sqSize);
         SetMenuItemBitmaps(popup, i + 1, MF_BYCOMMAND, bitmaps[i], bitmaps[i]);
     }
+
+    AppendMenuW(popup, MF_SEPARATOR, 0, nullptr);
+    auto ctx = NewBuildMenuCtx(win->CurrentTab(), Point{x, y});
+
+    // Selection submenu
+    HMENU selSubMenu = BuildMenuFromDef(menuDefSelection, CreatePopupMenu(), ctx);
+    AppendMenuW(popup, MF_POPUP, (UINT_PTR)selSubMenu, ToWStrTemp(_TRA("S&election")));
+
+    AppendMenuW(popup, MF_SEPARATOR, 0, nullptr);
+
+    // Edit Annotation (dynamic label when annotation is under cursor)
+    {
+        TempStr label = str::DupTemp(_TRA("Edit Annotations"));
+        if (ctx->annotationUnderCursor) {
+            TempStr t = AnnotationReadableNameTemp(ctx->annotationUnderCursor->type);
+            label = str::FormatTemp(_TRA("Edit %s Annotation"), t);
+        }
+        AppendMenuW(popup, MF_STRING, CmdEditAnnotations, ToWStrTemp(label));
+    }
+
+    // Create Annotation Under Cursor submenu
+    HMENU createAnnotSubMenu = BuildMenuFromDef(menuDefCreateAnnotUnderCursor, CreatePopupMenu(), ctx);
+    AppendMenuW(popup, MF_POPUP, (UINT_PTR)createAnnotSubMenu, ToWStrTemp(_TRA("Create Annotation &Under Cursor")));
+
+    // Delete Annotation (grayed if no annotation under cursor)
+    {
+        UINT flags = MF_STRING | (ctx->annotationUnderCursor ? MF_ENABLED : MF_GRAYED);
+        AppendMenuW(popup, flags, CmdDeleteAnnotation, ToWStrTemp(_TRA("Delete Annotation")));
+    }
+
+    AppendMenuW(popup, MF_SEPARATOR, 0, nullptr);
+
+    // Annotation Mode (always checked since this popup only appears in annotation mode)
+    AppendMenuW(popup, MF_STRING | MF_CHECKED, CmdToggleAnnotationMode, ToWStrTemp(_TRA("Annotation &Mode")));
+
+    // Save Annotations (grayed if nothing to save)
+    {
+        UINT flags = MF_STRING | (ctx->hasUnsavedAnnotations ? MF_ENABLED : MF_GRAYED);
+        AppendMenuW(popup, flags, CmdSaveAnnotations, ToWStrTemp(_TRA("Save Annotations to existing PDF")));
+    }
+
+    DeleteBuildMenuCtx(ctx);
+
     POINT pt{x, y};
     MapWindowPoints(win->hwndCanvas, HWND_DESKTOP, &pt, 1);
     MarkMenuOwnerDraw(popup);
@@ -2025,6 +2068,28 @@ void OnAnnotationModePopup(MainWindow* win, int x, int y) {
     }
     if (cmd >= 1 && cmd <= kNColors) {
         MakeHighlightAnnotationWithColor(win->CurrentTab(), kAnnotModeColors[cmd - 1].color);
+        return;
+    }
+    if (cmd > 0) {
+        auto custCmd = FindCustomCommand(cmd);
+        if (custCmd && custCmd->origId == CmdSelectionHandler) {
+            HwndSendCommand(win->hwndFrame, custCmd->id);
+            return;
+        }
+        LPARAM lpArg = MAKELPARAM(x, y);
+        AnnotationType annotType = CmdIdToAnnotationType(cmd);
+        if (annotType != AnnotationType::Unknown) {
+            HwndSendCommand(win->hwndFrame, cmd, lpArg);
+            return;
+        }
+        switch (cmd) {
+            case CmdEditAnnotations:
+            case CmdDeleteAnnotation: {
+                HwndSendCommand(win->hwndFrame, cmd, lpArg);
+                return;
+            }
+        }
+        HwndSendCommand(win->hwndFrame, cmd);
     }
 }
 
